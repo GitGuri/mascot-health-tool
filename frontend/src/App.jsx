@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Splash from './pages/Splash';
 import AskAI from './pages/AskAI';
 import HealthHub from './pages/HealthHub';
-import ReachOut from './pages/ReachOut';
+import ReachOut from './pages/Reachout';
 import ExpertChat from './pages/ExpertChat';
 import ExpertPortal from './pages/ExpertPortal';
 import MainLayout from './components/MainLayout';
