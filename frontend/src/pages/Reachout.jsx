@@ -195,4 +195,4 @@ const ReachOut = () => {
   );
 };
 
-export default ReachOut;
+export default Reachout;
