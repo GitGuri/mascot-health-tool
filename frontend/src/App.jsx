@@ -29,7 +29,7 @@ function App() {
           <Route index element={<Navigate to="/ai-chat" replace />} />
           <Route path="ai-chat" element={<AskAI />} />
           <Route path="health-hub" element={<HealthHub />} />
-          <Route path="reach-out" element={<Reachout />} />
+          <Route path="reach-out" element={<ReachOut />} />
           <Route path="expert-chat" element={<ExpertChat />} />
         </Route>
         <Route path="/expert-portal" element={<ExpertPortal />} />
