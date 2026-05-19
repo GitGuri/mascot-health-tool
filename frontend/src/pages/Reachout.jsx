@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { FaPhone, FaDirections, FaCalendarCheck, FaHospital, FaClinicMedical, FaSearch, FaFilter, FaHeartbeat } from 'react-icons/fa';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://mascot-backend.onrender.com';
 
 const Reachout = () => {
   const [clinics, setClinics] = useState([]);

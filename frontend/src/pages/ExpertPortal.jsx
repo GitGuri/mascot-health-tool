@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaUserMd, FaComments, FaSignOutAlt, FaReply, FaCheckCircle, FaClock, FaUser } from 'react-icons/fa';
 import io from 'socket.io-client';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://mascot-backend.onrender.com';
 
 const ExpertPortal = () => {
   const [expertId] = useState(`expert_${Date.now()}`);
