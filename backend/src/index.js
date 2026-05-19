@@ -17,7 +17,11 @@ const io = new Server(httpServer, {
   }
 });
 
-app.use(cors());
+// CORS configuration for API endpoints
+app.use(cors({
+  origin: [process.env.CLIENT_URL || 'http://localhost:3000', 'https://*.onrender.com'],
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/chat', chatRoutes);
