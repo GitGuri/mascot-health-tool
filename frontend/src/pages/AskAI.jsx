@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaRobot, FaUser, FaPaperPlane, FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = 'https://mascot-backend.onrender.com' || 'http://localhost:5000';
 
 const AskAI = () => {
   const [messages, setMessages] = useState([]);
