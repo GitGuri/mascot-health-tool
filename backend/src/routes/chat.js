@@ -1,6 +1,9 @@
 import express from 'express';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const router = express.Router();
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 router.post('/ask', async (req, res) => {
   try {
@@ -9,29 +12,47 @@ router.post('/ask', async (req, res) => {
     if (!message || message.trim().length === 0) {
       return res.status(400).json({ error: "Message is required" });
     }
-    
-    // Simple response for testing
-    const responses = {
-      "hiv": "HIV can be prevented by using condoms consistently, taking PrEP medication, getting tested regularly, and avoiding sharing needles. Would you like more details about any of these methods?",
-      "pregnancy": "Pregnancy can be prevented using various contraception methods including condoms, birth control pills, implants, IUDs, and emergency contraception. In Zimbabwe, these are available at clinics like CeSHHAR and local health centers.",
-      "test": "You can get tested for HIV at any public health facility, CeSHHAR centers, or during community outreach programs. Testing is confidential and often free.",
-      "default": `Thank you for your question about "${message}". The MASCOT Health Assistant provides information about HIV prevention and pregnancy prevention for university students in Zimbabwe. Please ask me about sexual health, HIV testing, contraception, or where to find health services.`
-    };
-    
-    let response = responses.default;
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('hiv')) response = responses.hiv;
-    else if (lowerMessage.includes('pregn') || lowerMessage.includes('contracept')) response = responses.pregnancy;
-    else if (lowerMessage.includes('test') || lowerMessage.includes('where')) response = responses.test;
-    
+
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    // System prompt for MASCOT Health Tool
+    const systemPrompt = `You are MASCOT Health Assistant, an AI providing health information for university students in Zimbabwe.
+You specialize in:
+- HIV prevention and testing information
+- Pregnancy prevention and contraception options available in Zimbabwe
+- Sexual health education
+- Directing users to health services in Zimbabwe (CeSHHAR, hospitals, clinics)
+
+Always provide accurate, evidence-based information in a supportive and non-judgmental tone.
+Keep responses concise and relevant to the user's question.
+For sensitive topics, emphasize confidentiality and encourage seeking professional help from health centers.`;
+
+    // Build conversation history for Gemini
+    const conversationHistory = history.map(msg => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }]
+    }));
+
+    // Add current message
+    const chat = model.startChat({
+      history: conversationHistory,
+      generationConfig: {
+        maxOutputTokens: 500,
+        temperature: 0.7,
+      }
+    });
+
+    // Send message with system prompt
+    const result = await chat.sendMessage(`${systemPrompt}\n\nUser: ${message}`);
+    const responseText = result.response.text();
+
     res.json({
-      response: response,
+      response: responseText,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error("Chat route error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message || "Failed to get response from AI" });
   }
 });
 
