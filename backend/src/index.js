@@ -18,8 +18,14 @@ const io = new Server(httpServer, {
 });
 
 // CORS configuration for API endpoints
+const allowedOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:3000',
+  'https://mascot-frontend-bk6y.onrender.com',
+  /^https:\/\/.*\.onrender\.com$/  // Allow all onrender.com domains
+];
+
 app.use(cors({
-  origin: [process.env.CLIENT_URL || 'http://localhost:3000', 'https://*.onrender.com'],
+  origin: allowedOrigins,
   credentials: true
 }));
 app.use(express.json());

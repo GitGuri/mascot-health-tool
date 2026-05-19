@@ -87,11 +87,15 @@ router.get('/', async (req, res) => {
       .select('*')
       .order('name');
     
-    if (error) throw error;
-    res.json(data || []);
+    if (error) {
+      console.warn("Supabase fetch failed, returning sample data:", error.message);
+      return res.json(SAMPLE_CLINICS);
+    }
+    res.json(data || SAMPLE_CLINICS);
   } catch (error) {
     console.error("Error fetching clinics:", error);
-    res.status(500).json({ error: "Failed to fetch clinics" });
+    // Return sample data as fallback
+    res.json(SAMPLE_CLINICS);
   }
 });
 

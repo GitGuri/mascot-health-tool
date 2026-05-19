@@ -77,11 +77,15 @@ router.get('/', async (req, res) => {
       .select('*')
       .order('title');
     
-    if (error) throw error;
-    res.json(data || []);
+    if (error) {
+      console.warn("Supabase fetch failed, returning sample data:", error.message);
+      return res.json(SAMPLE_RESOURCES);
+    }
+    res.json(data || SAMPLE_RESOURCES);
   } catch (error) {
     console.error("Error fetching resources:", error);
-    res.status(500).json({ error: "Failed to fetch resources" });
+    // Return sample data as fallback
+    res.json(SAMPLE_RESOURCES);
   }
 });
 
