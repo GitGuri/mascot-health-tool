@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaRobot, FaUser, FaPaperPlane, FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
 
-const API_URL = 'https://mascot-backend.onrender.com' || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const AskAI = () => {
   const [messages, setMessages] = useState([]);
@@ -29,6 +29,7 @@ const AskAI = () => {
     setIsLoading(true);
 
     try {
+      console.log('Sending to API:', `${API_URL}/api/chat/ask`);
       const response = await axios.post(`${API_URL}/api/chat/ask`, {
         message: input,
         history: messages.map(m => ({ role: m.role, content: m.content }))
@@ -41,10 +42,18 @@ const AskAI = () => {
       };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('API Error Details:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message,
+        url: error.config?.url
+      });
+      
+      const errorDetail = error.response?.data?.error || error.response?.statusText || error.message;
       const errorMessage = {
         role: 'assistant',
-        content: "I'm having trouble connecting. Please check your connection or try again later. You can also reach out to CeSHHAR Zimbabwe directly for support.",
+        content: `Error: ${errorDetail || "I'm having trouble connecting. Please check your connection or try again later. You can also reach out to CeSHHAR Zimbabwe directly for support."}`,
         timestamp: new Date(),
         isError: true
       };
