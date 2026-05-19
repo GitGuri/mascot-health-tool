@@ -32,6 +32,18 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Debug endpoint to verify API is working
+app.get('/api/debug', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'Backend is running and reachable',
+    clientUrl: process.env.CLIENT_URL,
+    port: process.env.PORT,
+    nodeEnv: process.env.NODE_ENV,
+    timestamp: new Date().toISOString()
+  });
+});
+
 setupExpertChat(io);
 
 const PORT = process.env.PORT || 5000;

@@ -29,7 +29,13 @@ const ExpertPortal = () => {
   }, [isLoggedIn]);
 
   const connectSocket = () => {
-    socketRef.current = io(API_URL);
+    socketRef.current = io(API_URL, {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
+      transports: ['websocket', 'polling']
+    });
     
     socketRef.current.on('connect', () => {
       socketRef.current.emit('authenticate', { userId: expertId, role: 'expert' });
