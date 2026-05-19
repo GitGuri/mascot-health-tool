@@ -28,6 +28,48 @@ export function setupExpertChat(io) {
       }
     });
     
+    // NEW: request-conversation handler for the updated ExpertChat component
+    socket.on('request-conversation', async (data) => {
+      const { roomId, studentId, topic } = data;
+      
+      // Create a new conversation room
+      rooms.set(roomId, {
+        id: roomId,
+        studentId,
+        expertId: null,
+        topic,
+        status: 'waiting',
+        createdAt: new Date().toISOString(),
+        messages: []
+      });
+      
+      socket.join(roomId);
+      socket.conversationRoom = roomId;
+      
+      // Save to Supabase
+      const { error } = await supabase()
+        .from('conversations')
+        .insert({
+          room_id: roomId,
+          student_id: studentId,
+          topic,
+          status: 'waiting',
+          messages: []
+        });
+      
+      if (error) console.error('Error saving conversation:', error);
+      
+      // Notify all experts
+      io.to('expert-room').emit('new-conversation-request', {
+        roomId,
+        studentId,
+        topic,
+        timestamp: new Date().toISOString()
+      });
+      
+      socket.emit('conversation-requested', { roomId, status: 'waiting' });
+    });
+    
     socket.on('start-conversation', async (data) => {
       const { studentId, topic, initialMessage } = data;
       
@@ -100,6 +142,17 @@ export function setupExpertChat(io) {
         });
         
         io.to(roomId).emit('message-history', room.messages);
+      }
+    });
+    
+    // NEW: join-room handler for experts
+    socket.on('join-room', async (data) => {
+      const { roomId, expertId } = data;
+      const room = rooms.get(roomId);
+      
+      if (room) {
+        socket.join(roomId);
+        socket.emit('message-history', room.messages);
       }
     });
     
