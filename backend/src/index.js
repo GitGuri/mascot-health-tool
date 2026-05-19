@@ -24,6 +24,21 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'MASCOT Health Tool API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      debug: '/api/debug',
+      chat: '/api/chat/ask',
+      clinics: '/api/clinics',
+      resources: '/api/resources'
+    }
+  });
+});
+
 app.use('/api/chat', chatRoutes);
 app.use('/api/clinics', clinicRoutes);
 app.use('/api/resources', resourceRoutes);
