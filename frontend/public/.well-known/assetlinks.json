@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.onrender.mascot_frontend_bk6y.twa",
+    "sha256_cert_fingerprints": ["EC:FE:7E:21:E2:8F:72:B6:5B:FB:64:4A:AF:86:32:42:EF:B5:6B:0C:E5:C7:DC:8D:59:95:33:D3:64:3E:90:AB"]
+  }
+}]
